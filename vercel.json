@@ -3,14 +3,14 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "functions": {
-    "api/index.js": { 
+    "api/index.js": {
       "runtime": "@vercel/node@3.0.0"
     }
   },
   "routes": [
     {
-      "src": "/api/(.*)", 
-      "dest": "api/index.js", 
+      "src": "/api/(.*)",
+      "dest": "api/index.js",
       "methods": [
         "GET",
         "POST",
@@ -19,5 +19,6 @@
         "PATCH"
       ]
     }
-  ]
+  ],
+  "outputDirectory": "dist"
 }
