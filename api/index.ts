@@ -1,6 +1,6 @@
 // api/index.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { bootstrapServer } from '../src/bootstrap';
+import { bootstrapServer } from '../dist/src/bootstrap'; // ✅ compiled JS
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const app = await bootstrapServer();

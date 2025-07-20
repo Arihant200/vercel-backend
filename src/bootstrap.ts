@@ -1,8 +1,7 @@
 // src/bootstrap.ts
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { INestApplication } from '@nestjs/common';
 
 let cachedApp: INestApplication;
 
@@ -11,7 +10,7 @@ export async function bootstrapServer(): Promise<INestApplication> {
     const app = await NestFactory.create(AppModule);
     app.enableCors();
     app.useGlobalPipes(new ValidationPipe());
-    await app.init(); // ✅ Required for serverless
+    await app.init(); // Important for serverless
     cachedApp = app;
   }
   return cachedApp;

@@ -6,25 +6,18 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { INestApplication } from '@nestjs/common';
-import type { VercelRequest, VercelResponse } from '@vercel/node'; // Recommended types
 
-let cachedApp: INestApplication;
 
-async function bootstrapServer() {
-  if (!cachedApp) {
-    const app = await NestFactory.create(AppModule);
-    app.enableCors({
+
+// src/main.ts
+import { bootstrapServer } from './bootstrap';
+
+async function start() {
+  const app = await bootstrapServer();
+   app.enableCors({
       // Your CORS options
     });
     app.useGlobalPipes(new ValidationPipe());
-    // app.setGlobalPrefix('api'); // Optional: If you want all NestJS routes to automatically be prefixed
-    await app.init(); // CRITICAL for serverless
-    cachedApp = app;
-  }
-  return cachedApp;
+  await app.listen(3000);
 }
-
-export default async function (req: VercelRequest, res: VercelResponse) { // Use VercelRequest, VercelResponse if types installed
-  const app = await bootstrapServer();
-  await app.getHttpAdapter().getInstance()(req, res);
-}
+start();
