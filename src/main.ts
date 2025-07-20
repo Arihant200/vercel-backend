@@ -1,16 +1,30 @@
+// src/main.ts
 import * as dotenv from 'dotenv';
-dotenv.config();
+dotenv.config(); // Keep for local development if you use .env files there
+
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { INestApplication } from '@nestjs/common';
+import type { VercelRequest, VercelResponse } from '@vercel/node'; // Recommended types
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.enableCors({
-                 // If using cookies
-  });
-  app.useGlobalPipes(new ValidationPipe());
-  //  console.log('JWT_SECRET from .env in main.ts:', process.env.JWT_SECRET); 
-  await app.listen(process.env.PORT ?? 3000);
+let cachedApp: INestApplication;
+
+async function bootstrapServer() {
+  if (!cachedApp) {
+    const app = await NestFactory.create(AppModule);
+    app.enableCors({
+      // Your CORS options
+    });
+    app.useGlobalPipes(new ValidationPipe());
+    // app.setGlobalPrefix('api'); // Optional: If you want all NestJS routes to automatically be prefixed
+    await app.init(); // CRITICAL for serverless
+    cachedApp = app;
+  }
+  return cachedApp;
 }
-bootstrap();
+
+export default async function (req: VercelRequest, res: VercelResponse) { // Use VercelRequest, VercelResponse if types installed
+  const app = await bootstrapServer();
+  await app.getHttpAdapter().getInstance()(req, res);
+}
