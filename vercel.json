@@ -1,16 +1,16 @@
 {
   "version": 2,
   "installCommand": "npm install",
-  "buildCommand": "npm run build", 
+  "buildCommand": "npm run build",
   "functions": {
-    "dist/main.js": { 
+    "api/index.js": { 
       "runtime": "@vercel/node@3.0.0"
     }
   },
   "routes": [
     {
       "src": "/api/(.*)", 
-      "dest": "dist/main.js", 
+      "dest": "api/index.js", 
       "methods": [
         "GET",
         "POST",
